@@ -77,7 +77,7 @@ io.on('connection', (socket) => {
     console.log("client connected");
     socket.on("functionName", parameter => {
        console.log("functionParameter: " + parameter);
-       socket.emit("world", world.getTiles());
+       socket.emit("world", world);
     });
 });
 

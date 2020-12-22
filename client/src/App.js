@@ -21,8 +21,8 @@ const App = () => {
 
         socket.emit("functionName", "functionParameter");
 
-        socket.on("world", worldTiles => {
-           console.log(worldTiles);
+        socket.on("world", world => {
+           console.log(world);
         });
     }
 
