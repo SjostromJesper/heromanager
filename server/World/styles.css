@@ -1,0 +1,26 @@
+*, *::after, *::before {
+    margin: 0;
+    padding: 0;
+}
+
+div {
+    width: 1px;
+    height: 1px;
+}
+
+.water {
+    background-color: aqua;
+}
+
+.mountain {
+    background-color: #7e6d6d;
+}
+
+.grass {
+    background-color: darkolivegreen;
+}
+
+.dungeon {
+    background-color: red;
+}
+
