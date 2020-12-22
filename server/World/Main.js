@@ -74,7 +74,7 @@ http.listen(3001, () => {
 
 io.on('connection', (socket) => {
     // either with send()
-
+    console.log("client connected");
 });
 
 
