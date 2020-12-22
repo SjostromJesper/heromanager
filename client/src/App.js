@@ -13,24 +13,32 @@ let socket;
 const App = () => {
     const [getWorld, setWorld] = useState()
 
-    const verify = (tokenId) => {
-        socket = io.connect("http://localhost:3001", {
-            withCredentials: true,
-            extraHeaders: {
-                "auth": "tokenId"
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if(socket) {
+                socket.emit("functionName", "functionParameter");
             }
-        });
+            else {
+                socket = io.connect("http://localhost:3001", {
+                    withCredentials: true,
+                    extraHeaders: {
+                        "auth": "tokenId"
+                    }
+                });
 
-        socket.emit("functionName", "functionParameter");
+                socket.on("world", world => {
+                    setWorld(world);
+                });
+            }
 
-        socket.on("world", world => {
-           setWorld(JSON.parse(world));
-        });
-    }
+
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [])
+
 
   return (
     <div className="App">
-        <button onClick={() => {verify()}}>click me!</button>
         <Inventory/>
         <Log/>
         <Map worldData={getWorld}/>
