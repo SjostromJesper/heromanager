@@ -34,9 +34,9 @@ const app = require('express');
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
-        origin: "http://localhost:3000/",
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"],
-        allowedHeaders: ["auth"],
+        allowedHeaders: ["auth", "Access-Control-Allow-Origin"],
         credentials: true
     }
 });
@@ -68,7 +68,7 @@ http.listen(3001, () => {
         }
 
         //mapDrawer.drawMap(World);
-    }, 100)
+    }, 10000)
 
 });
 
