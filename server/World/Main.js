@@ -2,7 +2,7 @@ const World = require('./World.js');
 const WorldBuilder = require('./WorldBuilder.js');
 const Farmer = require('../Creatures/Farmer.js');
 const definePerlin = require('./perlin.js');
-const MapDrawer = require('./MapDrawer.js');
+const MapDrawer = require('./MapDrawerServer.js');
 
 const decisionsList = require('../AI/Decisions/DecisionList.js');
 const CreatureTick = require('./CreatureTick.js');
@@ -76,10 +76,9 @@ io.on('connection', (socket) => {
     // either with send()
     console.log("client connected");
     socket.on("functionName", parameter => {
-       console.log("functionParameter: " + parameter);
-        console.log(world.creatures)
-        //console.log(JSON.stringify(world))
-       socket.emit("world", JSON.stringify(world));
+        let colorMatrix = new MapDrawer().drawMap(world);
+        console.log(colorMatrix);
+        socket.emit("world", colorMatrix);
     });
 });
 

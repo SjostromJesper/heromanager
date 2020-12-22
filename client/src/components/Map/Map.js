@@ -12,8 +12,13 @@ const Map = (props) => {
             console.log("no data")
         }
     })
+    /**
+     * [[tileId, tileId, tileId],
+     * [tileId, tileId, tileId],
+     * [tileId, tileId, tileId]]
+     */
 
-    function drawMap(world) {
+    function drawMap(tileIdMatrix) {
         console.log(world)
         let sizeFactor = 4;
 
