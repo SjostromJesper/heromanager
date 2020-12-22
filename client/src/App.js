@@ -18,6 +18,12 @@ const App = () => {
                 "auth": "tokenId"
             }
         });
+
+        socket.emit("functionName", "functionParameter");
+
+        socket.on("world", worldTiles => {
+           console.log(worldTiles);
+        });
     }
 
 
