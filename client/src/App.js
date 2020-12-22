@@ -1,3 +1,5 @@
+import {useState} from "react";
+
 import Inventory from "./components/Inventory/Inventory.js";
 import Log from "./components/Log/Log.js";
 import Map from "./components/Map/Map.js";
@@ -9,6 +11,7 @@ import io from 'socket.io-client'
 let socket;
 
 const App = () => {
+    const [getWorld, setWorld] = useState([])
 
     const verify = (tokenId) => {
         console.log(tokenId)
@@ -23,6 +26,7 @@ const App = () => {
 
         socket.on("world", worldTiles => {
            console.log(worldTiles);
+           setWorld(...worldTiles);
         });
     }
 
@@ -32,7 +36,7 @@ const App = () => {
         <button onClick={() => {verify()}}>click me!</button>
         <Inventory/>
         <Log/>
-        <Map/>
+        <Map worldData={getWorld}/>
         <LogText/>
         <Loadbar/>
     </div>

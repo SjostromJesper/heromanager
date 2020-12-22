@@ -1,4 +1,13 @@
-const Map = () => {
+import {useEffect, useState} from "react";
+
+const Map = (props) => {
+    const [world, setWorld] = useState([])
+
+    useEffect(() => {
+        setWorld(props.worldData)
+        drawMap(world);
+    })
+
     function drawMap(world) {
         let sizeFactor = 4;
 
@@ -33,8 +42,6 @@ const Map = () => {
             ctx.fillStyle = color;
             ctx.fillRect(creature.coordinate.x * sizeFactor, creature.coordinate.y * sizeFactor, sizeFactor, sizeFactor);
         }
-
-        return canvas;
     }
 
     return (
