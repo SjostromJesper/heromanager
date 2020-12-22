@@ -2,7 +2,7 @@ module.exports =  class MapDrawer {
     drawMap(world) {
         let sizeFactor = 4;
 
-        const canvas = document.querySelector("canvas");
+        const canvas = document.createElement('canvas');
 
         canvas.setAttribute("width", "" + world.worldTiles.length * sizeFactor);
         canvas.setAttribute("height", "" + world.worldTiles.length * sizeFactor);

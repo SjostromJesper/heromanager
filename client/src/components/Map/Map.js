@@ -1,14 +1,20 @@
 import {useEffect, useState} from "react";
 
 const Map = (props) => {
-    const [world, setWorld] = useState([])
+    const [world, setWorld] = useState()
 
     useEffect(() => {
         setWorld(props.worldData)
-        drawMap(world);
+        if(world) {
+            drawMap(world)
+        }
+        else {
+            console.log("no data")
+        }
     })
 
     function drawMap(world) {
+        console.log(world)
         let sizeFactor = 4;
 
         const canvas = document.querySelector("canvas");
@@ -22,7 +28,7 @@ const Map = (props) => {
         for(let i = 0 ; i < world.worldTiles.length ; i++) {
             for(let j = 0 ; j < world.worldTiles[i].length ; j++) {
                 let currentTile = world.worldTiles[i][j]
-                let color = currentTile.getColor()
+                let color = currentTile.color
 
                 if(currentTile.events.includes("DUNGEON")) {
                     color = 'red'

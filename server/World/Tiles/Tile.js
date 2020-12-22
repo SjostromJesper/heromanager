@@ -1,7 +1,7 @@
 module.exports = class Tile {
     constructor() {
-        this.creatures = [];
         this.events = [];
+        this.color = this.getColor()
         this.id = null;
     }
 

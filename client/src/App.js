@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import Inventory from "./components/Inventory/Inventory.js";
 import Log from "./components/Log/Log.js";
@@ -11,10 +11,9 @@ import io from 'socket.io-client'
 let socket;
 
 const App = () => {
-    const [getWorld, setWorld] = useState([])
+    const [getWorld, setWorld] = useState()
 
     const verify = (tokenId) => {
-        console.log(tokenId)
         socket = io.connect("http://localhost:3001", {
             withCredentials: true,
             extraHeaders: {
@@ -24,12 +23,10 @@ const App = () => {
 
         socket.emit("functionName", "functionParameter");
 
-        socket.on("world", worldTiles => {
-           console.log(worldTiles);
-           setWorld(...worldTiles);
+        socket.on("world", world => {
+           setWorld(JSON.parse(world));
         });
     }
-
 
   return (
     <div className="App">
