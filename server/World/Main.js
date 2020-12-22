@@ -75,6 +75,10 @@ http.listen(3001, () => {
 io.on('connection', (socket) => {
     // either with send()
     console.log("client connected");
+    socket.on("functionName", parameter => {
+       console.log("functionParameter: " + parameter);
+       socket.emit("world", world.getTiles());
+    });
 });
 
 
