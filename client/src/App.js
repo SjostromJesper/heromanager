@@ -12,7 +12,12 @@ const App = () => {
 
     const verify = (tokenId) => {
         console.log(tokenId)
-        socket = io.connect("http://localhost:3001")
+        socket = io.connect("http://localhost:3001", {
+            withCredentials: true,
+            extraHeaders: {
+                "auth": "tokenId"
+            }
+        });
     }
 
 
