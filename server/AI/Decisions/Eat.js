@@ -13,6 +13,6 @@ module.exports = class Eat extends Decision{
     //return a list of decisions that would make us able to perform this decision
     //or nothing if
     getRequirements(creatureTick) {
-
+        return creatureTick.getActingCreature().getInventory().hasFood();
     }
 }

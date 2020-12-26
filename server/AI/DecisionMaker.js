@@ -38,6 +38,7 @@ module.exports = class DecisionMaker {
         //although we need food to eat, so if we can't eat because of some requirement
         //we need to shift the priority of that decision to a decision that would fulfill that requirement
         let choice = getByChance(weightedDecisionMap);
+
         console.log("chose: " + choice.constructor.name);
         return choice;
 

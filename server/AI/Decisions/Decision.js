@@ -12,7 +12,7 @@ module.exports = class Decision {
     //1 represents a decision that can be performed in one tick
     //moving to another tile would take more time and might take 5 ticks
     getTickCost(){
-        throw new Error("no");
+        throw new Error("implement me");
     }
 
     getRemainingTickCost(){
