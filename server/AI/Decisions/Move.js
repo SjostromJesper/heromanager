@@ -1,6 +1,4 @@
 const Decision = require('./Decision.js')
-const Woodlands = require('../../World/Tiles/Woodlands.js');
-const WaterTile = require('../../World/Tiles/WaterTile.js');
 const PF = require('pathfinding');
 
 module.exports = class Move extends Decision {
@@ -44,6 +42,9 @@ module.exports = class Move extends Decision {
         function distance(coordinate1, coordinate2) {
             return Math.sqrt(Math.pow((coordinate2.x - coordinate1.x), 2) + Math.pow((coordinate2.y - coordinate1.y), 2));
         }
+
+        const Woodlands = require('../../World/Tiles/Woodlands.js');
+        const WaterTile = require('../../World/Tiles/WaterTile.js');
 
         let destinationCoordinate = findCoordinateForRequirement(creatureTick.getWorld().worldTiles, function (tile) {
             return tile instanceof Woodlands;

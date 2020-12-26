@@ -1,9 +1,7 @@
 const Tile = require("./Tile.js");
-const MonsterEncounter = require("../../RandomEncounter/MonsterEncounter.js");
-const Orc = require("../../Creatures/Orc.js");
 
+module.exports = class Woodlands extends Tile {
 
-module.exports = class Woodlands extends Tile{
     constructor() {
         super();
     }

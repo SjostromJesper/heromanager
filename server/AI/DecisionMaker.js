@@ -5,15 +5,16 @@ module.exports = class DecisionMaker {
 
         let weightedDecisionMap = new Map();
         let creature = creatureTick.getActingCreature();
+
+        //remove all non-mandatory decisions if there are any mandatory decisions.
         let anyMandatoryDecisions = availableDecisions.some(decision => decision.isMandatory());
         if(anyMandatoryDecisions){
-            //remove all non-mandatory decisions
             availableDecisions = availableDecisions.filter(decision => decision.isMandatory());
         }
 
         //initialize all decisions //TODO default should be 0
         availableDecisions.forEach(decision => {
-            weightedDecisionMap.set(decision, 0);
+            weightedDecisionMap.set(decision, 0.01); //1% base chance, as the decision maker needs to work even if you have no quirks or anything.
         });
 
         //Consider the creatures goal, it might not have a current goal
@@ -25,8 +26,6 @@ module.exports = class DecisionMaker {
             });
         }
 
-
-
         //Then also consider the creatures other quirks and it's environment
 
 
@@ -37,9 +36,10 @@ module.exports = class DecisionMaker {
         //if a creature is hungry, "Eat" would have a high weight
         //although we need food to eat, so if we can't eat because of some requirement
         //we need to shift the priority of that decision to a decision that would fulfill that requirement
+
         let choice = getByChance(weightedDecisionMap);
 
-        console.log("chose: " + choice.constructor.name);
+        console.log("chose: " + choice.__proto__.name);
         return choice;
 
 

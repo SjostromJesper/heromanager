@@ -1,5 +1,5 @@
 const Decision = require('./Decision.js')
-const MonsterEncounter = require('../RandomEncounter/MonsterEncounter.js');
+const MonsterEncounter = require('../../RandomEncounter/MonsterEncounter.js');
 
 module.exports = class Combat extends Decision {
 

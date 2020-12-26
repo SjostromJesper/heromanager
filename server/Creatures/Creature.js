@@ -50,8 +50,8 @@ module.exports = class Creature{
         availableDecisions.push(...this.creatureDecisions);
 
         //any decisions offered by the random event
-        if(creatureTick.getRandomEvent()){
-            availableDecisions.push(...creatureTick.getRandomEvent().getAvailableDecisions());
+        if(creatureTick.getRandomEncounter()){
+            availableDecisions.push(...creatureTick.getRandomEncounter().getAvailableDecisions());
         }
 
         let uniqueDecisions =  [...new Set(availableDecisions)];
