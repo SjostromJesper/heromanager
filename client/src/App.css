@@ -1,0 +1,57 @@
+/*************** RESET ***************/
+
+*, *::after, *::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/*************** GENERAL ***************/
+
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+}
+/*************** INFO ***************/
+.info {
+    display: flex;
+    height: 60vh;
+}
+
+.Inventory {
+    background-color: darkolivegreen;
+    width: auto;
+    flex: 1;
+}
+
+.Log {
+    background-color: red;
+    flex: 1;
+}
+
+.Map {
+    background-color: brown;
+    flex: 1;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/*************** LOG ***************/
+
+.LogText {
+    background-color: indianred;
+    height: 38vh;
+}
+
+/*************** LOAD ***************/
+
+.Loadbar {
+    background-color: cadetblue;
+    height: 2vh;
+}
+

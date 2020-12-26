@@ -31,7 +31,7 @@ const Map = (props) => {
 
         for(let i = 0 ; i < tileIdMatrix.length ; i++) {
             for(let j = 0 ; j < tileIdMatrix[i].length ; j++) {
-                
+
                 ctx.fillStyle = tileIdMatrix[i][j];
                 ctx.fillRect(i * sizeFactor, j * sizeFactor, sizeFactor, sizeFactor);
             }
@@ -40,7 +40,6 @@ const Map = (props) => {
 
     return (
         <div className="Map">
-            <p>map</p>
             <canvas></canvas>
         </div>
     );
