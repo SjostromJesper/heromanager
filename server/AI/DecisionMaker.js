@@ -42,13 +42,13 @@ module.exports = class DecisionMaker {
         return choice;
 
 
-//Returnera något Decision i mappen baserat på dess probability
-//
-// Kanske ha en flagga för om vi tillåter negativa värden eller inte
-//
-// exempel
-// flee: 9; //90%
-// move: 1; //10%
+        //Returnera något Decision i mappen baserat på dess probability
+        //
+        // Kanske ha en flagga för om vi tillåter negativa värden eller inte
+        //
+        // exempel
+        // flee: 9; //90%
+        // move: 1; //10%
         function getByChance(m) {
             let options = [];
             let weights = [];
