@@ -61,7 +61,7 @@ module.exports = class Creature{
         //TODO
         //return decision;
 
-        return decisions.move;
+        return decision;
     }
 
     getCustomDecisions(){

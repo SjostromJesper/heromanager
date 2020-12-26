@@ -17,7 +17,7 @@ module.exports = class Tile {
     }
 
     getRandomEvent() {
-        if(Math.random() > 0.01){
+        if(Math.random() > 0.75){
             return new MonsterEncounter(new Orc());
         }
     }

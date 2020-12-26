@@ -2,7 +2,6 @@ module.exports = class DecisionMaker {
 
 //See which decision a creature would make right now
     getDecision(creatureTick, availableDecisions) {
-
         let weightedDecisionMap = new Map();
         let creature = creatureTick.getActingCreature();
 
@@ -14,7 +13,7 @@ module.exports = class DecisionMaker {
 
         //initialize all decisions //TODO default should be 0
         availableDecisions.forEach(decision => {
-            weightedDecisionMap.set(decision, 0.01); //1% base chance, as the decision maker needs to work even if you have no quirks or anything.
+            weightedDecisionMap.set(decision, 1); //small base chance, as the decision maker needs to work even if you have no quirks or anything.
         });
 
         //Consider the creatures goal, it might not have a current goal
@@ -29,9 +28,10 @@ module.exports = class DecisionMaker {
         //Then also consider the creatures other quirks and it's environment
 
 
+        //TODO this code shouldn't go here
         //Consider the creature status, for example if it's hungry, it's more likely to want to eat
-        let hungerWeight = creature.getCreatureStatus().getMaxHunger() - creature.getCreatureStatus().getHunger();
-        weightedDecisionMap.set(decisions.eat, weightedDecisionMap.get(decisions.eat) + hungerWeight);
+        //let hungerWeight = creature.getCreatureStatus().getMaxHunger() - creature.getCreatureStatus().getHunger();
+        //weightedDecisionMap.set(decisions.eat, weightedDecisionMap.get(decisions.eat) + hungerWeight);
 
         //if a creature is hungry, "Eat" would have a high weight
         //although we need food to eat, so if we can't eat because of some requirement
@@ -39,7 +39,6 @@ module.exports = class DecisionMaker {
 
         let choice = getByChance(weightedDecisionMap);
 
-        console.log("chose: " + choice.__proto__.name);
         return choice;
 
 
@@ -57,7 +56,6 @@ module.exports = class DecisionMaker {
             const map = m;
 
             map.forEach((value, key) => {
-                console.log("option: " + key.constructor.name + " has weight: " + value);
                 options.push(key);
                 weights.push(value);
             });
