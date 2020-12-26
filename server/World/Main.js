@@ -68,7 +68,7 @@ http.listen(3001, () => {
         }
 
         //mapDrawer.drawMap(World);
-    }, 5000)
+    }, 1000)
 
 });
 

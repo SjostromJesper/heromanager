@@ -1,15 +1,9 @@
-//All decisions available in the game
-const Move = require('./Decisions/Move.js');
-const Flee = require('./Decisions/Flee.js');
-
-let allDecisions = [new Move(), new Flee()];
-
 module.exports = class DecisionMaker {
 
 //See which decision a creature would make right now
-    function
-
     getDecision(creatureTick, availableDecisions) {
+        let allDecisions = [decisions.move, decisions.flee];
+
         let weightedDecisionMap = new Map();
         let creature = creatureTick.getActingCreature();
 
@@ -38,6 +32,7 @@ module.exports = class DecisionMaker {
         //although we need food to eat, so if we can't eat because of some requirement
         //we need to shift the priority of that decision to a decision that would fulfill that requirement
         let choice = getByChance(weightedDecisionMap);
+        console.log(choice)
         console.log("chose: " + choice.constructor.name);
         return choice;
 
@@ -49,12 +44,14 @@ module.exports = class DecisionMaker {
 // exempel
 // flee: 9; //90%
 // move: 1; //10%
-        function getByChance(map) {
+        function getByChance(m) {
             let options = [];
             let weights = [];
 
+            const map = m;
+
             map.forEach((value, key) => {
-                console.log("option: " + key + " has weight: " + value);
+                console.log("option: " + key.constructor.name + " has weight: " + value);
                 options.push(key);
                 weights.push(value);
             });
