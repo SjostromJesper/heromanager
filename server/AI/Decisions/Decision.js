@@ -2,17 +2,26 @@ module.exports = class Decision {
 
     constructor(props) {
         //this.remainingTickCost = this.getTickCost();
+        this.mandatory = false;
     }
 
     perform(creatureTick){
         throw new Error("no");
     }
 
+    setMandatory(mandatory){
+        this.mandatory = mandatory;
+    }
+
+    isMandatory(){
+        return this.mandatory;
+    }
+
     //0 could represent a free action
     //1 represents a decision that can be performed in one tick
     //moving to another tile would take more time and might take 5 ticks
     getTickCost(){
-        throw new Error("no");
+        throw new Error("implement me");
     }
 
     getRemainingTickCost(){

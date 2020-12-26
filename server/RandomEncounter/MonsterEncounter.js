@@ -9,7 +9,15 @@ module.exports = class MonsterEncounter extends RandomEncounter{
     }
 
     getAvailableDecisions() {
-        return [new Combat(), new Flee()];
+        let combat = new Combat();
+        combat.setMandatory(true);
+        let flee = new Flee();
+        flee.setMandatory(true);
+        return [combat, flee];
+    }
+
+    getDescription(){
+        return "You encounter a fierce monster!";
     }
 
     getCreatures(){

@@ -2,20 +2,24 @@ module.exports = class DecisionMaker {
 
 //See which decision a creature would make right now
     getDecision(creatureTick, availableDecisions) {
-        let allDecisions = [decisions.move, decisions.flee];
-
         let weightedDecisionMap = new Map();
         let creature = creatureTick.getActingCreature();
 
+        //remove all non-mandatory decisions if there are any mandatory decisions.
+        let anyMandatoryDecisions = availableDecisions.some(decision => decision.isMandatory());
+        if(anyMandatoryDecisions){
+            availableDecisions = availableDecisions.filter(decision => decision.isMandatory());
+        }
+
         //initialize all decisions //TODO default should be 0
         availableDecisions.forEach(decision => {
-            weightedDecisionMap.set(decision, 1);
+            weightedDecisionMap.set(decision, 1); //small base chance, as the decision maker needs to work even if you have no quirks or anything.
         });
 
         //Consider the creatures goal, it might not have a current goal
         let goal = creature.getGoal();
         if (goal) {
-            allDecisions.forEach(decision => {
+            availableDecisions.forEach(decision => {
                 let decisionProbability = goal.getProbability(decision);
                 weightedDecisionMap.set(decision, decisionProbability);
             });
@@ -24,26 +28,27 @@ module.exports = class DecisionMaker {
         //Then also consider the creatures other quirks and it's environment
 
 
+        //TODO this code shouldn't go here
         //Consider the creature status, for example if it's hungry, it's more likely to want to eat
-        let hungerWeight = creature.getCreatureStatus().getMaxHunger() - creature.getCreatureStatus().getHunger();
-        weightedDecisionMap.set(decisions.eat, weightedDecisionMap.get(decisions.eat) + hungerWeight);
+        //let hungerWeight = creature.getCreatureStatus().getMaxHunger() - creature.getCreatureStatus().getHunger();
+        //weightedDecisionMap.set(decisions.eat, weightedDecisionMap.get(decisions.eat) + hungerWeight);
 
         //if a creature is hungry, "Eat" would have a high weight
         //although we need food to eat, so if we can't eat because of some requirement
         //we need to shift the priority of that decision to a decision that would fulfill that requirement
+
         let choice = getByChance(weightedDecisionMap);
-        console.log(choice)
-        console.log("chose: " + choice.constructor.name);
+
         return choice;
 
 
-//Returnera något Decision i mappen baserat på dess probability
-//
-// Kanske ha en flagga för om vi tillåter negativa värden eller inte
-//
-// exempel
-// flee: 9; //90%
-// move: 1; //10%
+        //Returnera något Decision i mappen baserat på dess probability
+        //
+        // Kanske ha en flagga för om vi tillåter negativa värden eller inte
+        //
+        // exempel
+        // flee: 9; //90%
+        // move: 1; //10%
         function getByChance(m) {
             let options = [];
             let weights = [];
@@ -51,7 +56,6 @@ module.exports = class DecisionMaker {
             const map = m;
 
             map.forEach((value, key) => {
-                console.log("option: " + key.constructor.name + " has weight: " + value);
                 options.push(key);
                 weights.push(value);
             });
@@ -61,6 +65,7 @@ module.exports = class DecisionMaker {
             return options[chosenIndex];
         }
 
+        //takes a list of weights, returns an index
         function chooseWithChance(args) {
             let argCount = args.length;
             let sumOfChances = 0;

@@ -1,3 +1,6 @@
+const MonsterEncounter = require("../../RandomEncounter/MonsterEncounter.js");
+const Orc = require("../../Creatures/Orc.js");
+
 module.exports = class Tile {
     constructor() {
         this.events = [];
@@ -14,7 +17,9 @@ module.exports = class Tile {
     }
 
     getRandomEvent() {
-        throw new Error("implement me")
+        if(Math.random() > 0.75){
+            return new MonsterEncounter(new Orc());
+        }
     }
 
     getDecisions() {

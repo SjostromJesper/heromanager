@@ -2,6 +2,7 @@ const CreatureStatus = require('./CreatureStatus.js');
 const Inventory = require('../Inventory/Inventory.js')
 const DecisionMaker = require('../AI/DecisionMaker.js');
 
+
 module.exports = class Creature{
 
     constructor(quirks = "", bodyParts = "", items = "", x = 0, y= 0) {
@@ -20,6 +21,12 @@ module.exports = class Creature{
 
     getHomeCoordinate(){
         return this.home;
+    }
+
+    //is compared against Math.random, so should return a double 0 - 0.99999
+    //0.9 is 90% chance
+    getEscapeChance(){
+        return 0.9;
     }
 
     getId(){
@@ -42,6 +49,11 @@ module.exports = class Creature{
         //default creature decisions
         availableDecisions.push(...this.creatureDecisions);
 
+        //any decisions offered by the random event
+        if(creatureTick.getRandomEncounter()){
+            availableDecisions.push(...creatureTick.getRandomEncounter().getAvailableDecisions());
+        }
+
         let uniqueDecisions =  [...new Set(availableDecisions)];
 
         let decision = new DecisionMaker().getDecision(creatureTick, uniqueDecisions);
@@ -49,7 +61,7 @@ module.exports = class Creature{
         //TODO
         //return decision;
 
-        return decisions.move;
+        return decision;
     }
 
     getCustomDecisions(){

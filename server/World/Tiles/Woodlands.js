@@ -1,9 +1,7 @@
 const Tile = require("./Tile.js");
-const MonsterEncounter = require("../../RandomEncounter/MonsterEncounter.js");
-const Orc = require("../../Creatures/Orc.js");
 
+module.exports = class Woodlands extends Tile {
 
-module.exports = class Woodlands extends Tile{
     constructor() {
         super();
     }
@@ -17,10 +15,15 @@ module.exports = class Woodlands extends Tile{
     }
 
     getRandomEvent(){
-        if(Math.random() > 0.9998){
-            /*return new MonsterEncounter(new Orc());*/
+        let encounter = super.getRandomEvent();
+        if (encounter == null)
+        {
+            if (Math.random() > 0.8) {
+                /*return new MonsterEncounter(new Orc());*/
+            }
         }
-        return null;
+
+        return encounter;
     }
 
     getDecisions() {

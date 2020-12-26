@@ -3,8 +3,7 @@ const MonsterEncounter = require("../../RandomEncounter/MonsterEncounter.js");
 const Orc = require("../../Creatures/Orc.js");
 
 
-
-module.exports =class Grasslands extends Tile{
+module.exports = class Grasslands extends Tile {
     constructor() {
         super();
     }
@@ -17,11 +16,16 @@ module.exports =class Grasslands extends Tile{
         return 'green';
     }
 
-    getRandomEvent(){
-        if(Math.random() > 0.8){
-            /*return new MonsterEncounter(new Orc());*/
+    getRandomEvent() {
+        let encounter = super.getRandomEvent();
+        if (encounter == null)
+        {
+            if (Math.random() > 0.8) {
+                /*return new MonsterEncounter(new Orc());*/
+            }
         }
-        return null;
+
+        return encounter;
     }
 
     getDecisions() {
