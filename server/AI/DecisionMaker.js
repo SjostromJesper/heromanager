@@ -2,24 +2,30 @@ module.exports = class DecisionMaker {
 
 //See which decision a creature would make right now
     getDecision(creatureTick, availableDecisions) {
-        let allDecisions = [decisions.move, decisions.flee];
 
         let weightedDecisionMap = new Map();
         let creature = creatureTick.getActingCreature();
+        let anyMandatoryDecisions = availableDecisions.some(decision => decision.isMandatory());
+        if(anyMandatoryDecisions){
+            //remove all non-mandatory decisions
+            availableDecisions = availableDecisions.filter(decision => decision.isMandatory());
+        }
 
         //initialize all decisions //TODO default should be 0
         availableDecisions.forEach(decision => {
-            weightedDecisionMap.set(decision, 1);
+            weightedDecisionMap.set(decision, 0);
         });
 
         //Consider the creatures goal, it might not have a current goal
         let goal = creature.getGoal();
         if (goal) {
-            allDecisions.forEach(decision => {
+            availableDecisions.forEach(decision => {
                 let decisionProbability = goal.getProbability(decision);
                 weightedDecisionMap.set(decision, decisionProbability);
             });
         }
+
+
 
         //Then also consider the creatures other quirks and it's environment
 
@@ -61,6 +67,7 @@ module.exports = class DecisionMaker {
             return options[chosenIndex];
         }
 
+        //takes a list of weights, returns an index
         function chooseWithChance(args) {
             let argCount = args.length;
             let sumOfChances = 0;

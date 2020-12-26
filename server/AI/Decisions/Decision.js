@@ -2,10 +2,19 @@ module.exports = class Decision {
 
     constructor(props) {
         //this.remainingTickCost = this.getTickCost();
+        this.mandatory = false;
     }
 
     perform(creatureTick){
         throw new Error("no");
+    }
+
+    setMandatory(mandatory){
+        this.mandatory = mandatory;
+    }
+
+    isMandatory(){
+        return this.mandatory;
     }
 
     //0 could represent a free action

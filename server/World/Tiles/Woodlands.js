@@ -17,10 +17,15 @@ module.exports = class Woodlands extends Tile{
     }
 
     getRandomEvent(){
-        if(Math.random() > 0.9998){
-            /*return new MonsterEncounter(new Orc());*/
+        let encounter = super.getRandomEvent();
+        if (encounter == null)
+        {
+            if (Math.random() > 0.8) {
+                /*return new MonsterEncounter(new Orc());*/
+            }
         }
-        return null;
+
+        return encounter;
     }
 
     getDecisions() {
