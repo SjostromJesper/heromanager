@@ -6,7 +6,7 @@ module.exports = class Combat extends Decision {
     perform(creatureTick) {
         if(creatureTick.getRandomEncounter() != null && creatureTick.getRandomEncounter().constructor.name === "MonsterEncounter"){ //TODO want to use 'instanceof' but couldn't get it to work
             //decision maker decided to fight the monsters
-            console.log(creatureTick.getRandomEncounter().getDescription());
+            creatureTick.getRandomEncounter().logEncounterDescription(creatureTick);
         }else{
             //see if there's something to fight in our current whereabouts
         }

@@ -16,8 +16,8 @@ module.exports = class MonsterEncounter extends RandomEncounter{
         return [combat, flee];
     }
 
-    getDescription(){
-        return "You encounter a fierce monster!";
+    logEncounterDescription(creatureTick){
+        creatureTick.getActingCreature().writeLogEntry("dear diary: monsters", "I encountered a fierce monster in the " + creatureTick.getCreatureTile().constructor.name);
     }
 
     getCreatures(){

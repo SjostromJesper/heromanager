@@ -1,4 +1,4 @@
-const Item = require("../Item.js");
+const Item = require("./Item.js");
 
 module.exports = class LogBook extends Item{
 
@@ -18,5 +18,9 @@ module.exports = class LogBook extends Item{
 
     addNewLog(logTitle, logContent) {
         this.logs.push({title: logTitle, content: logContent})
+    }
+
+    isFull(){
+        return this.logs.length > 1000; //idunno
     }
 }

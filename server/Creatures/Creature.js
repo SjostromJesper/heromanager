@@ -1,7 +1,7 @@
 const CreatureStatus = require('./CreatureStatus.js');
 const Inventory = require('../Inventory/Inventory.js')
 const DecisionMaker = require('../AI/DecisionMaker.js');
-
+const LogBook = require('../Items/LogBook.js');
 
 module.exports = class Creature{
 
@@ -10,13 +10,14 @@ module.exports = class Creature{
         this.creatureStatus = new CreatureStatus();
         this.knownCoordinates = new Set();
         this.inventory = new Inventory(items);
-        this.coordinate = {x:x, y:y};
-        this.home = {x:x, y:y};
-        this.id = Date.now() * Math.random();
+        this.coordinate = {x: x, y: y};
+        this.home = {x: x, y: y};
+        this.id = Math.trunc(Date.now() * Math.random());
         this.name = "getDemonNameGenerator().getRandomName()";
         this.creatureStatus.health = 10;
         this.creatureDecisions = [decisions.move, decisions.eat];
         this.currentDecision = null;
+        this.inventory.addItem(new LogBook()); //a creature always has a log book
     }
 
     getHomeCoordinate(){
@@ -35,6 +36,11 @@ module.exports = class Creature{
 
     getInventory(){
         return this.inventory;
+    }
+
+    //helper method so we don't have to dig into the inventory every time to log something
+    writeLogEntry(title, entry){
+        return this.inventory.getLogBooks();
     }
 
     makeDecision(creatureTick){

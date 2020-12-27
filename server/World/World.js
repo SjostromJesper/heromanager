@@ -18,4 +18,8 @@
     removeCreature(creature) {
         this.creatures.delete(creature.getId());
     }
-}
+
+     getCreature(id) {
+        return this.creatures.get(id);
+     }
+ }

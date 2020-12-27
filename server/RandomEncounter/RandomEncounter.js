@@ -10,4 +10,8 @@ module.exports = class RandomEncounter {
     getCreatures(){
         throw new Error("implement me")
     }
+
+    logEncounterDescription(creatureTick){
+        throw new Error("implement me")
+    }
 }

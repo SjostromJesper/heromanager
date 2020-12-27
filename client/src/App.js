@@ -19,7 +19,8 @@ const App = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             if(socket) {
-                socket.emit("functionName", "functionParameter");
+                socket.emit("getWorld", "");
+                socket.emit("getPlayer", "");
             }
             else {
                 socket = io.connect("http://localhost:3001", {
@@ -32,6 +33,14 @@ const App = () => {
                 socket.on("world", world => {
                     setWorld(world);
                 });
+
+                socket.on("player", player => {
+                    console.log("player log books")
+                    console.log(player)
+                    console.log(player.inventory);
+                    //setLog(player.getInventory().getLogBooks())
+                });
+
             }
 
 

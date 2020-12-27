@@ -79,6 +79,10 @@ io.on('connection', (socket) => {
         let colorMatrix = new MapDrawer().drawMap(world);
         socket.emit("world", colorMatrix);
     });
+
+    socket.on("getPlayer", param => {
+       socket.emit("player", world.getCreature(farmerJoe.getId()));
+    });
 });
 
 
