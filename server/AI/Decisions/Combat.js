@@ -4,7 +4,7 @@ const MonsterEncounter = require('../../RandomEncounter/MonsterEncounter.js');
 module.exports = class Combat extends Decision {
 
     perform(creatureTick) {
-        if(creatureTick.getRandomEncounter() != null && creatureTick.getRandomEncounter().constructor.name === "MonsterEncounter"){
+        if(creatureTick.getRandomEncounter() != null && creatureTick.getRandomEncounter().constructor.name === "MonsterEncounter"){ //TODO want to use 'instanceof' but couldn't get it to work
             //decision maker decided to fight the monsters
             console.log(creatureTick.getRandomEncounter().getDescription());
         }else{
