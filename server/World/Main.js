@@ -1,3 +1,7 @@
+const mongoose = require('../database/MongoDB.js')
+const db = new mongoose();
+
+
 const World = require('./World.js');
 const WorldBuilder = require('./WorldBuilder.js');
 const Farmer = require('../Creatures/Farmer.js');
@@ -41,37 +45,37 @@ const gameIo = require('socket.io')(gameHttp, {
     }
 });
 
+function start() {
+    db.getAllUsers()
+    gameHttp.listen(3001, () => {
+        console.log("up")
+        setInterval(() => {
 
-gameHttp.listen(3001, () => {
-    console.log("up")
-    setInterval(() => {
+            for (let keyValue of world.creatures) {
+                let creature = world.creatures.get(keyValue[0]);
 
-        for (let keyValue of world.creatures) {
-            let creature = world.creatures.get(keyValue[0]);
+                let creatureTick = new CreatureTick();
+                let creatureTile = world.worldTiles[creature.coordinate.x][creature.coordinate.y];
 
-            let creatureTick = new CreatureTick();
-            let creatureTile = world.worldTiles[creature.coordinate.x][creature.coordinate.y];
+                creature.hungerTick();
+                creatureTick.setWorld(world);
+                creatureTick.setActingCreature(creature);
+                creatureTick.setCreatureTile(creatureTile);
+                creatureTick.setRandomEncounter(creatureTile.getRandomEvent());
 
-            creature.hungerTick();
-            creatureTick.setWorld(world);
-            creatureTick.setActingCreature(creature);
-            creatureTick.setCreatureTile(creatureTile);
-            creatureTick.setRandomEncounter(creatureTile.getRandomEvent());
+                let decision = creature.makeDecision(creatureTick);
 
-            let decision = creature.makeDecision(creatureTick);
+                decision.perform(creatureTick);
 
-            decision.perform(creatureTick);
-
-            if (creature.isDead()) {
-                console.log(creature.getName() + " died");
-                world.removeCreature(creature);
+                if (creature.isDead()) {
+                    console.log(creature.getName() + " died");
+                    world.removeCreature(creature);
+                }
             }
-        }
 
-        //mapDrawer.drawMap(World);
-    }, 10000)
-
-});
+        }, 10000)
+    });
+}
 
 function googleLogin() {
     console.log("google login attempt")
@@ -155,3 +159,4 @@ gameIo.on('connection', (gameSocket) => {
 
 
 
+db.startServer(start());
