@@ -23,7 +23,7 @@ const App = () => {
                 socket.emit("getWorld", "");
                 socket.emit("getPlayer", "");
             }
-        }, 1000)
+        }, 1000*60)
         return () => clearInterval(interval)
     }, [])
 
