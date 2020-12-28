@@ -1,5 +1,4 @@
 import io from "socket.io-client";
-
 class Network {
     constructor() {
         this.socket = io.connect("http://localhost:3001", {
@@ -9,7 +8,6 @@ class Network {
             }
         });
     }
-
     on(name, callback){
         this.socket.on(name, callback);
     }
@@ -19,11 +17,8 @@ class Network {
     }
 
     isConnected(){
-        if(this.socket){
-            return true;
-        }
-        return false;
+        return !!this.socket;
     }
 }
-
-export default Network;
+const socket = new Network();
+export default socket;
