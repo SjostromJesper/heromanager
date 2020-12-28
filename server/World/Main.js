@@ -159,4 +159,4 @@ gameIo.on('connection', (gameSocket) => {
 
 
 
-db.startServer(start());
+db.startServer(start);
