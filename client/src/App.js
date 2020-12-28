@@ -9,8 +9,8 @@ import Loadbar from "./components/Loadbar/Loadbar.js";
 
 import io from 'socket.io-client'
 import {logContext} from "./contexts/LogContext.js";
-
-let socket;
+import {Login} from "./components/Login/Login.js";
+import socket from "./Network.js";
 
 const App = () => {
     const [world, setWorld] = useState()
@@ -19,39 +19,27 @@ const App = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if(socket) {
+            if(socket.isConnected) {
                 socket.emit("getWorld", "");
                 socket.emit("getPlayer", "");
             }
-            else {
-                socket = io.connect("http://localhost:3001", {
-                    withCredentials: true,
-                    extraHeaders: {
-                        "auth": "tokenId"
-                    }
-                });
-
-                socket.on("world", world => {
-                    //console.log("game world")
-                    setWorld(world);
-                });
-
-                socket.on("player", player => {
-                    console.log("player log books")
-                    console.log(player)
-                    console.log(player.inventory);
-                    //setLog(JSON.parse(player).getInventory().getLogBooks())
-                });
-
-            }
-
-
         }, 1000)
         return () => clearInterval(interval)
     }, [])
 
+    socket.on("world", world => {
+        setWorld(world);
+    });
+
+    socket.on("player", player => {
+        console.log("player log books")
+        console.log(player)
+        console.log(player.inventory);
+    });
+
   return (
     <div className="App">
+        <Login></Login>
         <div className="info">
             <Inventory inventoryData={inventory}/>
                 <Log logData={log}/>

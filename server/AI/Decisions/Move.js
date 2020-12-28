@@ -31,11 +31,6 @@ module.exports = class Move extends Decision {
                     }
                 }
             }
-            if (closestMatchingCoordinate) {
-                console.log("found forest at x: " + closestMatchingCoordinate.x + " y: " + closestMatchingCoordinate.y);
-            } else {
-                console.log("couldn't find forest");
-            }
             return closestMatchingCoordinate;
         }
 
