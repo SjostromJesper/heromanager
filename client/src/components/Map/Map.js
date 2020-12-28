@@ -19,6 +19,7 @@ const Map = (props) => {
      */
 
     function drawMap(tileIdMatrix) {
+
         let sizeFactor = 4;
 
         const canvas = document.querySelector("canvas");

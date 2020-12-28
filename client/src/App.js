@@ -16,6 +16,7 @@ const App = () => {
     const [world, setWorld] = useState()
     const [inventory, setInventory] = useState()
     const [log, setLog] = useState()
+
     useEffect(() => {
         const interval = setInterval(() => {
             if(socket.isConnected) {
