@@ -3,7 +3,6 @@ const Decision = require('./Decision.js');
 module.exports = class Eat extends Decision{
     perform(creatureTick) {
         creatureTick.getActingCreature().getCreatureStatus().setHunger(200);
-        console.log(creatureTick.getActingCreature().getName() + " ate some food");
     }
 
     getTickCost() {
