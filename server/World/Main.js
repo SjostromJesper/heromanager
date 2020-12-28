@@ -75,7 +75,7 @@ http.listen(3001, () => {
 io.on('connection', (socket) => {
     // either with send()
     console.log("client connected");
-    socket.on("functionName", parameter => {
+    socket.on("getWorld", parameter => {
         let colorMatrix = new MapDrawer().drawMap(world);
         socket.emit("world", colorMatrix);
     });

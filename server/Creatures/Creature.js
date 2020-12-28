@@ -34,13 +34,13 @@ module.exports = class Creature{
         return this.id;
     }
 
-    getInventory(){
+    getInventory = () => {
         return this.inventory;
     }
 
     //helper method so we don't have to dig into the inventory every time to log something
     writeLogEntry(title, entry){
-        return this.inventory.getLogBooks();
+        this.inventory.getCurrentLogBook().addNewLog(title, entry)
     }
 
     makeDecision(creatureTick){

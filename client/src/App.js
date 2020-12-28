@@ -16,6 +16,7 @@ const App = () => {
     const [world, setWorld] = useState()
     const [inventory, setInventory] = useState()
     const [log, setLog] = useState()
+
     useEffect(() => {
         const interval = setInterval(() => {
             if(socket) {
@@ -31,6 +32,7 @@ const App = () => {
                 });
 
                 socket.on("world", world => {
+                    //console.log("game world")
                     setWorld(world);
                 });
 
@@ -38,7 +40,7 @@ const App = () => {
                     console.log("player log books")
                     console.log(player)
                     console.log(player.inventory);
-                    //setLog(player.getInventory().getLogBooks())
+                    //setLog(JSON.parse(player).getInventory().getLogBooks())
                 });
 
             }

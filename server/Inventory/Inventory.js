@@ -5,6 +5,7 @@ module.exports = class Inventory{
     constructor(items){
         this.items = [];
         this.items.push(...items);
+        //this.logBooks = this.getLogBooks()
     }
 
     addItem(item){
@@ -24,7 +25,7 @@ module.exports = class Inventory{
         return this.has((item) => item instanceof Food);
     }
 
-    getLogBooks(){
+    getLogBooks = () =>{
         return this.items.filter(item => item instanceof LogBook);
     }
 
@@ -32,7 +33,7 @@ module.exports = class Inventory{
     //a new book is created if there wasn't an empty book
     getCurrentLogBook(){
         let currentLogBooks = this.items.filter(item => item instanceof LogBook && !item.isFull());
-        if(currentLogBooks && currentLogBooks.length() > 0){
+        if(currentLogBooks && currentLogBooks.length > 0){
             return currentLogBooks[0];
         }else{
             //there's
