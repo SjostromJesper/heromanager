@@ -1,3 +1,5 @@
+
+
 const mongoose = require('../database/MongoDB.js')
 const db = new mongoose();
 
@@ -114,6 +116,20 @@ function googleLogin() {
 
 gameIo.on('connection', (gameSocket) => {
     console.log("new game connection");
+
+    gameSocket.on("login", emailPass => {
+        console.log("attempt login")
+        console.log(emailPass)
+        db.getUser(emailPass.email, user => {
+            let valid = user.validatePassword(emailPass.password);
+            if(valid){
+                gameSocket.emit("loginSuccess", user);
+            }else{
+                gameSocket.emit("loginFailure", user);
+            }
+        });
+    });
+
     gameSocket.on("getWorld", parameter => {
         console.log("getWorld")
         let colorMatrix = new MapDrawer().drawMap(world);
@@ -136,7 +152,7 @@ gameIo.on('connection', (gameSocket) => {
                 usernameField: 'login',
                 passwordField: 'password'
             },
-            function(username, password, done) {
+            function (username, password, done) {
                 console.log("local strategy completed")
                 // User.findOne({ username: username }, function (err, user) {
                 //     if (err) { return done(err); }
@@ -156,7 +172,6 @@ gameIo.on('connection', (gameSocket) => {
 
     });
 });
-
 
 
 db.startServer(start);
