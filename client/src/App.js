@@ -19,11 +19,11 @@ const App = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if(socket.isConnected) {
+            if (socket.isConnected) {
                 socket.emit("getWorld", "");
                 socket.emit("getPlayer", "");
             }
-        }, 1000*60)
+        }, 1000)
         return () => clearInterval(interval)
     }, [])
 
@@ -37,18 +37,18 @@ const App = () => {
         console.log(player.inventory);
     });
 
-  return (
-    <div className="App">
-        <Login></Login>
-        <div className="info">
-            <Inventory inventoryData={inventory}/>
+    return (
+        <div className="App">
+            <Login></Login>
+            <div className="info">
+                <Inventory inventoryData={inventory}/>
                 <Log logData={log}/>
-            <Map worldData={world}/>
-        </div>
+                <Map worldData={world}/>
+            </div>
             <LogText/>
-        <Loadbar/>
-    </div>
-  );
+            <Loadbar/>
+        </div>
+    );
 }
 
 export default App;

@@ -18,6 +18,7 @@ module.exports = class Creature{
         this.creatureDecisions = [decisions.move, decisions.eat];
         this.currentDecision = null;
         this.inventory.addItem(new LogBook()); //a creature always has a log book
+        this.updateKnownTiles();
     }
 
     getHomeCoordinate(){
@@ -43,6 +44,45 @@ module.exports = class Creature{
         this.inventory.getCurrentLogBook().addNewLog(title, entry)
     }
 
+    updateKnownTiles(creatureTick = null){
+        this.getVisibleTiles(creatureTick).forEach(coordinate => this.knownCoordinates.add(coordinate));
+    }
+
+    getVisibleTiles(creatureTick = null){
+        let x = this.coordinate.x;
+        let y = this.coordinate.y;
+        let visibleTiles = [];
+
+        //current
+        visibleTiles.push({x: x, y: y});
+
+        //diagonals
+        visibleTiles.push({x: x+1, y: y+1}); //top right
+        visibleTiles.push({x: x-1, y: y+1}); //top left
+        visibleTiles.push({x: x+1, y: y-1}); //bottom right
+        visibleTiles.push({x: x-1, y: y-1}); //bottom left
+
+        //up down
+        visibleTiles.push({x: x, y: y+1}); //over
+        visibleTiles.push({x: x, y: y-1}); //under
+
+        //left right
+        visibleTiles.push({x: x+1, y: y}); //right
+        visibleTiles.push({x: x-1, y: y}); //left
+        return visibleTiles;
+    }
+
+    //TODO set.has doesn't work with objects (Has to be the exact same object)
+    knowsCoordinate(x, y){
+        let knownCheck = false;
+        this.knownCoordinates.forEach(known => {
+            if (known.x === x && known.y === y){
+                knownCheck = true;
+            }
+        });
+        return knownCheck;
+    }
+
     makeDecision(creatureTick){
         const availableDecisions = []
 
@@ -64,9 +104,6 @@ module.exports = class Creature{
 
         let decision = new DecisionMaker().getDecision(creatureTick, uniqueDecisions);
 
-        //TODO
-        //return decision;
-
         return decision;
     }
 
@@ -80,10 +117,6 @@ module.exports = class Creature{
 
     getQuirks(){
         return this.quirks
-    }
-
-    getAdjacentTiles(){
-
     }
 
     getName(){

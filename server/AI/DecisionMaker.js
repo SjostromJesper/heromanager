@@ -7,7 +7,7 @@ module.exports = class DecisionMaker {
 
         //remove all non-mandatory decisions if there are any mandatory decisions.
         let anyMandatoryDecisions = availableDecisions.some(decision => decision.isMandatory());
-        if(anyMandatoryDecisions){
+        if (anyMandatoryDecisions) {
             availableDecisions = availableDecisions.filter(decision => decision.isMandatory());
         }
 

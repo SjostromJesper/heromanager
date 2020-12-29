@@ -1,5 +1,3 @@
-
-
 const mongoose = require('../database/MongoDB.js')
 const db = new mongoose();
 
@@ -48,31 +46,46 @@ const gameIo = require('socket.io')(gameHttp, {
 });
 
 function start() {
-    db.getAllUsers()
+
+    function populateCreatureTick(creature) {
+        let creatureTick = new CreatureTick();
+        let creatureTile = world.worldTiles[creature.coordinate.x][creature.coordinate.y];
+        creatureTick.setWorld(world);
+        creatureTick.setActingCreature(creature);
+        creatureTick.setCreatureTile(creatureTile);
+        creatureTick.setRandomEncounter(creatureTile.getRandomEvent());
+        return creatureTick;
+    }
+
     gameHttp.listen(3001, () => {
         console.log("up")
         setInterval(() => {
 
             for (let keyValue of world.creatures) {
+                let start = new Date().getMilliseconds();
+
                 let creature = world.creatures.get(keyValue[0]);
 
-                let creatureTick = new CreatureTick();
-                let creatureTile = world.worldTiles[creature.coordinate.x][creature.coordinate.y];
+                //populate the creature tick so we can pass it around
+                let creatureTick = populateCreatureTick(creature);
 
+                //some stuff that will happen every tick, like growing more hungry
                 creature.hungerTick();
-                creatureTick.setWorld(world);
-                creatureTick.setActingCreature(creature);
-                creatureTick.setCreatureTile(creatureTile);
-                creatureTick.setRandomEncounter(creatureTile.getRandomEvent());
+                creature.updateKnownTiles(creatureTick);
 
+                //creature makes a decision
                 let decision = creature.makeDecision(creatureTick);
+                console.log("Creature made decision " + decision.constructor.name)
 
+                //performs the decision
                 decision.perform(creatureTick);
 
                 if (creature.isDead()) {
                     console.log(creature.getName() + " died");
                     world.removeCreature(creature);
                 }
+
+                console.log("one tick took " + (new Date().getMilliseconds() - start) + " ms")
             }
 
         }, 10000)
@@ -122,9 +135,9 @@ gameIo.on('connection', (gameSocket) => {
         console.log(emailPass)
         db.getUser(emailPass.email, user => {
             let valid = user.validatePassword(emailPass.password);
-            if(valid){
+            if (valid) {
                 gameSocket.emit("loginSuccess", user);
-            }else{
+            } else {
                 gameSocket.emit("loginFailure", user);
             }
         });
@@ -132,7 +145,7 @@ gameIo.on('connection', (gameSocket) => {
 
     gameSocket.on("getWorld", parameter => {
         console.log("getWorld")
-        let colorMatrix = new MapDrawer().drawMap(world);
+        let colorMatrix = new MapDrawer().drawMap(world, farmerJoe);
         gameSocket.emit("world", colorMatrix);
     });
 

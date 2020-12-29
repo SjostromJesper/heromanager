@@ -56,12 +56,12 @@ export const Login = () => {
                 <button id="login" onClick={() => login(email, password)}>Login</button>
             </div>
             <label id="loginMessage"></label>
-            <div className="Login">
-                <button id="facebook" onClick={facebookLogin}>Facebook</button>
-                <button id="twitter" onClick={twitterLogin}>Twitter</button>
-                <button id="google" onClick={googleLogin}>Google</button>
-                <button id="apple" onClick={appleLogin}>Apple</button>
-            </div>
+            {/*<div className="Login">*/}
+            {/*    <button id="facebook" onClick={facebookLogin}>Facebook</button>*/}
+            {/*    <button id="twitter" onClick={twitterLogin}>Twitter</button>*/}
+            {/*    <button id="google" onClick={googleLogin}>Google</button>*/}
+            {/*    <button id="apple" onClick={appleLogin}>Apple</button>*/}
+            {/*</div>*/}
         </div>
 
     );
