@@ -5,10 +5,9 @@ module.exports = class Sword extends Weapon{
     constructor() {
         super();
         this.name = "";
-
     }
 
     getLabels() {
-        return super.getLabels().push(...["SHARP_TOOL", "SWORD"]);
+        return super.getLabels().push(...[itemLabels.sharp_tool, itemLabels.sword]);
     }
 }

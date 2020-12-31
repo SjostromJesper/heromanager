@@ -13,26 +13,16 @@ const CreatureTick = require('./CreatureTick.js');
 const tileIds = require('./Tiles/TileIds.js');
 const itemLabels = require('../Items/ItemLabels.js');
 const NameGenerator = require('../Generators/NameGenerator.js');
+const Dice = require('../Dice/Dice.js');
 
 definePerlin(globalThis);
 decisionsList(globalThis);
 tileIds(globalThis);
 itemLabels(globalThis);
 
-
-//our random map generator needs a seed
-let seed = Math.random();
-console.log("Map generator using seed: " + seed);
-noise.seed(seed);
-
-let world = new World();
-world.worldTiles = new WorldBuilder().getSmartWorld();
-
-let farmerJoe = new Farmer("", "", "", 25, 25);
-console.log(farmerJoe.getName() + " has 200 hunger");
-farmerJoe.getCreatureStatus().setHunger(300);
-
-world.addCreature(farmerJoe);
+//test dice
+let dice = new Dice(6);
+console.log("Test d6: " + dice.roll());
 
 const app = require('express');
 const gameHttp = require('http').createServer(app);
@@ -47,49 +37,82 @@ const gameIo = require('socket.io')(gameHttp, {
 
 function start() {
 
-    function populateCreatureTick(creature) {
-        let creatureTick = new CreatureTick();
-        let creatureTile = world.worldTiles[creature.coordinate.x][creature.coordinate.y];
-        creatureTick.setWorld(world);
-        creatureTick.setActingCreature(creature);
-        creatureTick.setCreatureTile(creatureTile);
-        creatureTick.setRandomEncounter(creatureTile.getRandomEvent());
-        return creatureTick;
-    }
+    //our random map generator needs a seed
+    let seed = Math.random();
+    let loggedInUsers = new Map(); //map user session to a character id or something
+    console.log("Map generator using seed: " + seed);
+    noise.seed(seed);
 
-    gameHttp.listen(3001, () => {
-        console.log("up")
-        setInterval(() => {
+    //world ids as x-y coordinates (as we're probably going to place worlds next to each other)
+    db.loadWorld(0, 0, loadedWorld => {
 
-            for (let keyValue of world.creatures) {
-                let start = new Date().getMilliseconds();
+        let world = loadedWorld;
+        console.log("Loaded world")
+        console.log(world);
 
-                let creature = world.creatures.get(keyValue[0]);
+        //construct the world if loading yielded nothing
+        if (!world) {
+            console.log("No existing world");
+            world = new World();
 
-                //populate the creature tick so we can pass it around
-                let creatureTick = populateCreatureTick(creature);
+            world.worldTiles = new WorldBuilder().getSmartWorld();
 
-                //some stuff that will happen every tick, like growing more hungry
-                creature.hungerTick();
-                creature.updateKnownTiles(creatureTick);
+            let farmerJoe = new Farmer("", "", "", 25, 25);
+            console.log(farmerJoe.getName() + " has 200 hunger");
+            farmerJoe.getCreatureStatus().setHunger(300);
 
-                //creature makes a decision
-                let decision = creature.makeDecision(creatureTick);
-                console.log("Creature made decision " + decision.constructor.name)
+            world.addCreature(farmerJoe);
+        }
 
-                //performs the decision
-                decision.perform(creatureTick);
+        function populateCreatureTick(creature) {
+            let creatureTick = new CreatureTick();
+            let creatureTile = world.worldTiles[creature.coordinate.x][creature.coordinate.y];
+            creatureTick.setWorld(world);
+            creatureTick.setActingCreature(creature);
+            creatureTick.setCreatureTile(creatureTile);
+            creatureTick.setRandomEncounter(creatureTile.getRandomEvent());
+            return creatureTick;
+        }
 
-                if (creature.isDead()) {
-                    console.log(creature.getName() + " died");
-                    world.removeCreature(creature);
+        gameHttp.listen(3001, () => {
+            console.log("up")
+            setInterval(() => {
+
+                for (let keyValue of world.creatures) {
+                    let start = new Date().getMilliseconds();
+
+                    let creature = world.creatures.get(keyValue[0]);
+
+                    //populate the creature tick so we can pass it around
+                    let creatureTick = populateCreatureTick(creature);
+
+                    //some stuff that will happen every tick, like growing more hungry
+                    creature.hungerTick();
+                    creature.updateKnownTiles(creatureTick);
+
+                    //creature makes a decision
+                    let decision = creature.makeDecision(creatureTick);
+                    console.log("Creature made decision " + decision.constructor.name)
+
+                    //performs the decision
+                    decision.perform(creatureTick);
+
+                    if (creature.isDead()) {
+                        console.log(creature.getName() + " died");
+                        world.removeCreature(creature);
+                    }
+
+                    console.log("one tick took " + (new Date().getMilliseconds() - start) + " ms")
                 }
 
-                console.log("one tick took " + (new Date().getMilliseconds() - start) + " ms")
-            }
+                //TODO persist world
+                //db.persistWorld(0, 0, world);
 
-        }, 10000)
+            }, 1000) //TODO WARNING WORLD PERSISTS AT EVERY TICK, DON'T SET A VERY LOW TICK VALUE
+        });
     });
+
+
 }
 
 function googleLogin() {

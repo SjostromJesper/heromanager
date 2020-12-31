@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 const User = require('./schemas/UserSchema.js')
+const WorldModel = require("./schemas/WorldSchema.js");
 
 const uri = "mongodb+srv://beppe:Gaffeltruck123@cluster0.0cwsl.gcp.mongodb.net/heromanager2020?retryWrites=true&w=majority";
+
+function getWorldId(worldX, worldY) {
+    return ("" + worldX) + ("" + worldY);
+}
 
 module.exports = class MongoDB {
 
@@ -35,6 +40,30 @@ module.exports = class MongoDB {
 
     updateUser(user) {
         user.save().then(result => {
+            console.log(result)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
+    loadWorld(worldX, worldY, worldCallback){
+        WorldModel.findById(getWorldId(worldX, worldY), (err, result) => {
+            if(result){
+                worldCallback(new WorldModel(result));
+                return;
+            }
+            worldCallback(null);
+        });
+    }
+
+
+    persistWorld(worldX, worldY, world){
+        const w = new WorldModel({
+            _id: getWorldId(worldX, worldY),
+            worldTiles: world.getTiles(),
+            creatures: world.creatures
+        });
+        w.save().then(result => {
             console.log(result)
         }).catch((error) => {
             console.log(error)

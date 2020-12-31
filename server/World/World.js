@@ -7,7 +7,6 @@
     }
 
     getTiles(){
-        console.log("world works");
         return this.worldTiles;
     }
 
@@ -23,3 +22,4 @@
         return this.creatures.get(id);
      }
  }
+

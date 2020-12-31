@@ -3,4 +3,6 @@ module.exports = function itemLabels(global) {
 
     mod.food = "FOOD";
     mod.weapon = "WEAPON";
+    mod.sharp_tool = "SHARP_TOOL";
+    mod.sword = "SWORD";
 }

@@ -7,22 +7,58 @@ module.exports = class Creature{
 
     constructor(quirks = "", bodyParts = "", items = "", x = 0, y= 0) {
         this.quirks = quirks;
-        this.creatureStatus = new CreatureStatus();
+
         this.knownCoordinates = new Set();
         this.inventory = new Inventory(items);
         this.coordinate = {x: x, y: y};
         this.home = {x: x, y: y};
         this.id = Math.trunc(Date.now() * Math.random());
         this.name = "getDemonNameGenerator().getRandomName()";
-        this.creatureStatus.health = 10;
+
         this.creatureDecisions = [decisions.move, decisions.eat];
         this.currentDecision = null;
         this.inventory.addItem(new LogBook()); //a creature always has a log book
         this.updateKnownTiles();
+
+        //if we're doing EON rules, bundle all this together into EON statistics
+        this.creatureStatus = new CreatureStatus();
+        this.creatureStatus.health = 10;
+        this.equipment = {
+            feet: "",
+        }
+        this.experience = 0;
+        this.strength = 10;
+        this.agility = 10;
+        this.charisma = 10;
     }
 
     getHomeCoordinate(){
         return this.home;
+    }
+
+    /*
+        1: 100
+        2: 400
+        3: 900
+        4: 1600
+        5: 2500
+        6: e.t.c
+     */
+    getLevel(){
+        if(this.experience <= 0){
+            return 0;
+        }
+        return 0.1 * Math.sqrt(this.experience);
+    }
+
+    setLevel(level){
+        if(level <= 0){
+            this.experience = 0;
+            return;
+        }
+        //level = 0.1 * math.sqrt(experience) so
+        //Math.sqrt(experience) = level / 0.1; s0
+        this.experience = Math.pow(level/0.1, 2);
     }
 
     //is compared against Math.random, so should return a double 0 - 0.99999
@@ -97,6 +133,8 @@ module.exports = class Creature{
 
         //any decisions offered by the random event
         if(creatureTick.getRandomEncounter()){
+            console.log("Random encounter!")
+            console.log(creatureTick.getRandomEncounter().getAvailableDecisions())
             availableDecisions.push(...creatureTick.getRandomEncounter().getAvailableDecisions());
         }
 
