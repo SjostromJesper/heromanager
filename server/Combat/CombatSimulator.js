@@ -12,6 +12,36 @@ const CombatLog = require("../StoryGenerator/CombatLog.js");
 const OtherNameGenerator = require("../Generators/OtherNameGenerator.js");
 const DicePool = require("../Dice/DicePool.js");
 
+const injuries = {
+    PAIN: "pain",
+    BLEED: "bleed",
+    INFECTION: {
+
+    },
+    INNER_DAMAGE: "inner_damage",
+    //references the skeleton, i.e the spine could be at risk
+    BREAK_RISK: function(...bodyParts){
+        return {
+            bodyParts: bodyParts
+        }
+    },
+    //references the body part that is at risk of being amputated
+    AMPUTATION_RISK: function(...bodyParts){
+        return {
+            bodyParts: bodyParts
+        }
+    },
+}
+
+//Things that can happen as part of taking damage that aren't really injuries
+//We might group these into the injuries anyway
+const damageEffects = {
+    DROP: "drop", //references dropping something, usually your weapon or shield?
+    FALL: "fall", //damage to your leg could cause you to fall over
+    PUSHED_BACK: "pushed_back",
+    STUNNED: "stunned", //"Omtöcknad"
+    ARMOR_DAMAGE: "armor_damage"
+}
 
 const offensiveTactics = {
     STANDARD_ATTACK: "standard_attack",
@@ -154,8 +184,23 @@ function* oneOnOne(creature1, creature2) {
 
             if (attackRoll >= defenseRoll) { //tie breaker is attacker wins, eon rules
                 let bodyPart = getBodyPart();
+
+                //räknar ut 'Skadeverkan', vilket är den slutgiltiga skadan
+                //vilket är den slutgiltiga mängden skada efter alla modifierare och rustning o.s.v.
                 let damageEffect = getDamageEffect();
+
+                //Skadeverkan motsvarar ett nummer i en tabell, som avgör vad som händer
+                //skador och ev. döddsslag
                 let damageTableNumber = getDamageTableRoll(damageEffect);
+
+                //Skadeefekten säger om vi ska göra ett dödsslag, och vilka skador vi fick
+                let damageEffects = getDamageTableResult(damageTableNumber);
+
+                if(damageEffects.deathRoll){
+                    //if present, the death roll is in fact the difficulty of the roll, which we must beat with lifeforce
+                    let deathRollDifficulty = damageEffects.deathRoll;
+                    let lifeForceRoll = defender.rollLifeForce();
+                }
 
             } else {
                 //nothing happens?
@@ -173,11 +218,11 @@ function* oneOnOne(creature1, creature2) {
 //as one player-character against many NPCs could have different rules than
 //one NPC against many player characters
 function* manyOnOne(group1, creature2) {
-    throw new Error("not yet implemented");
+    throw new Error("manyOnOne not yet implemented");
 }
 
 function* oneOnMany(creature1, group2) {
-    throw new Error("not yet implemented");
+    throw new Error("oneOnMany not yet implemented");
 }
 
 function getBodyPart() {
@@ -215,7 +260,14 @@ function getDamageTableRoll(damageEffect) {
 //In the book, there are a lot of various results here, including a lot of different injuries that remain during the fight
 //for now, just say that any number over 10 is a deathblow, for which s save must be rolled or you are dead
 function getDamageTableResult(damageTableRoll) {
+    return {
+        //for lower damage numbers, the table often sets the difficulty of the roll to aproximately
+        //the table roll, below is a very rough aproximation that we need to replace with the actual table
+        deathRoll: damageTableRoll > 10 ? damageTableRoll : null,
 
+        //there are a number of different types of injuries that can be sustained, for now, just add wounds
+        injuries: []
+    }
 }
 
 //amounts of damage cause different amounts of exhaustion
@@ -248,7 +300,7 @@ function getDamageEffect(attacker, defender) {
 //functions that an object needs to define to participate
 module.exports = class EONCreature {
     constructor() {
-
+        this.exhaustion = 0;
     }
 
     getName() {
@@ -264,7 +316,19 @@ module.exports = class EONCreature {
     }
 
     takeDamage(amount) {
+        throw new Error("Implement me");
+    }
 
+    getModifiedExhaustion() {
+        return this.getBaseExhaustion() + this.exhaustion;
+    }
+
+    addExhaustion(amount) {
+        this.exhaustion += amount;
+    }
+
+    getBaseExhaustion() {
+        return 0;
     }
 
     //Chokslag - Varje gång en skada leder till att man ökar utmattning sår man ett Chokslag
@@ -319,7 +383,6 @@ module.exports = class EONCreature {
 class EONTestCreature extends EONCreature {
     constructor() {
         super();
-        this.exhaustion = 0;
     }
 
     getName() {
@@ -334,20 +397,8 @@ class EONTestCreature extends EONCreature {
         return phases.MELEE;
     }
 
-    getModifiedExhaustion() {
-        return this.getBaseExhaustion() + this.exhaustion;
-    }
-
-    addExhaustion(amount) {
-        this.exhaustion += amount;
-    }
-
     rollWeaponDamage() {
         throw new Error("implement me");
-    }
-
-    getBaseExhaustion() {
-        return 0;
     }
 
     rollBaseDamage() {
