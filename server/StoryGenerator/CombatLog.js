@@ -11,7 +11,7 @@ module.exports = class CombatLog {
     }
 
     addLog(log) {
-        this.logs.push(log);
+        this.logs.push({title: log.title, description: log.description});
     }
 
     getLogs() {
@@ -26,12 +26,4 @@ module.exports = class CombatLog {
 
     }
 
-}
-
-//Documents a step in combat
-module.exports = class Log {
-    constructor(title, description) {
-        this.title = title;
-        this.description = description;
-    }
 }

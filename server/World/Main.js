@@ -15,6 +15,8 @@ const itemLabels = require('../Items/ItemLabels.js');
 const NameGenerator = require('../Generators/NameGenerator.js');
 const Dice = require('../Dice/Dice.js');
 
+const CombatSimulator = require("../Combat/CombatSimulator.js")
+
 definePerlin(globalThis);
 decisionsList(globalThis);
 tileIds(globalThis);
@@ -22,7 +24,11 @@ itemLabels(globalThis);
 
 //test dice
 let dice = new Dice(6);
-console.log("Test d6: " + dice.roll());
+console.log(dice);
+console.log("Test d6: " + dice.roll);
+
+//test combat
+CombatSimulator.testCombat();
 
 const app = require('express');
 const gameHttp = require('http').createServer(app);
@@ -36,7 +42,7 @@ const gameIo = require('socket.io')(gameHttp, {
 });
 
 function start() {
-
+    return;
     //our random map generator needs a seed
     let seed = Math.random();
     let loggedInUsers = new Map(); //map user session to a character id or something

@@ -84,20 +84,25 @@ const phases = {
     MAGIC: "magic"
 }
 
-module.exports = function testCombat() {
+function testCombat() {
     let group1 = [new EONTestCreature()];
     let group2 = [new EONTestCreature()];
 
     let combatSimulator = getSimulator(group1, group2)
-    console.log("Simulator: " + combatSimulator.test);
-    while (!combatSimulator.done) {
+    console.log(combatSimulator)
+    let combatInterval = setInterval(() => {
         let combatLog = combatSimulator.next();
-    }
+        if(combatLog.done){
+            clearInterval(combatInterval);
+        }
+    }, 1000);
 }
 
-module.exports = function getSimulator(group1, group2) {
+function getSimulator(group1, group2) {
     if (group1.length === 1 && group2.length === 1) {
-        return oneOnOne(group1[0], group2[0])
+        console.log("return simulator")
+        console.log(oneOnOne);
+        return oneOnOne(group1[0], group2[0]);
     } else if (group1.length === 1 && group2.length > 1) {
         return oneOnMany(group1[0], group2);
     } else if (group2.length > 1 && group2.length === 1) {
@@ -116,6 +121,8 @@ module.exports = function getSimulator(group1, group2) {
         throw new Error("No matching fight case for groups");
     }
 }
+
+module.exports = {testCombat, getSimulator}
 
 //first parameter is assumed to be a player character
 //perform each step of combat by calling next
@@ -140,6 +147,7 @@ thing.next === undefined
 thing.done = true;*/
 
 function* oneOnOne(creature1, creature2) {
+    console.log("Combat start!")
     this.test = "";
     let combatLog = new CombatLog();
     combatLog.startOfCombat(creature1, creature2);
@@ -148,6 +156,13 @@ function* oneOnOne(creature1, creature2) {
 
     //Loop Rounds
     for (; ;) {
+        //don't execute a round of combat if there's no one to fight
+        if (creature1.isDead() || creature2.isDead()) {
+            //returning signals the end of the generator function
+            return combatLog;
+        }
+        console.log("");
+        console.log("Next round!")
         //reactions
         let reaction1 = creature1.rollReaction();
         let reaction2 = creature2.rollReaction();
@@ -161,16 +176,12 @@ function* oneOnOne(creature1, creature2) {
             attacker = creature2;
             defender = creature1;
         }
-
-        //don't execute a round of combat if there's no one to fight
-        if (creature1.isDead() || creature2.isDead()) {
-            //returning signals the end of the generator function
-            return combatLog;
-        }
+        console.log(attacker.getName() + " is attacking " + defender.getName())
 
         //creatures pick in which phase they would like to act
         let attackerPhase = attacker.pickPhase();
         let defenderPhase = defender.pickPhase();
+        console.log(attacker.getName() + " chooses phase " + attackerPhase)
 
         //Ranged phase - Avståndsfasen
         if (attackerPhase === phases.RANGED) {
@@ -181,25 +192,37 @@ function* oneOnOne(creature1, creature2) {
         if (attackerPhase === phases.MELEE) {
             let attackRoll = attacker.rollAttack();
             let defenseRoll = defender.rollDefense();
+            console.log(attacker.getName() + " rolls " + attackRoll + " against defense " + defenseRoll);
 
             if (attackRoll >= defenseRoll) { //tie breaker is attacker wins, eon rules
                 let bodyPart = getBodyPart();
 
                 //räknar ut 'Skadeverkan', vilket är den slutgiltiga skadan
                 //vilket är den slutgiltiga mängden skada efter alla modifierare och rustning o.s.v.
-                let damageEffect = getDamageEffect();
+                let skadeVerkan = getDamageEffect(attacker, defender);
+                console.log("Skadeverkan: " + skadeVerkan)
 
                 //Skadeverkan motsvarar ett nummer i en tabell, som avgör vad som händer
                 //skador och ev. döddsslag
-                let damageTableNumber = getDamageTableRoll(damageEffect);
+                let damageTableNumber = getDamageTableRoll(skadeVerkan);
+                //console.log("Tabellnummer: " + damageTableNumber);
 
                 //Skadeefekten säger om vi ska göra ett dödsslag, och vilka skador vi fick
-                let damageEffects = getDamageTableResult(damageTableNumber);
+                let damageTableResult = getDamageTableResult(damageTableNumber);
+                //console.log("Tabellresultat:");
+                //console.log(damageTableResult)
 
-                if(damageEffects.deathRoll){
+                if(damageTableResult.deathRoll){
                     //if present, the death roll is in fact the difficulty of the roll, which we must beat with lifeforce
-                    let deathRollDifficulty = damageEffects.deathRoll;
+                    let deathRollDifficulty = damageTableResult.deathRoll;
                     let lifeForceRoll = defender.rollLifeForce();
+                    console.log("roll life force " + lifeForceRoll + " against death difficulty " + deathRollDifficulty);
+                    if(lifeForceRoll < deathRollDifficulty){
+                        console.log(defender.getName() + " was slain")
+                        defender.die();
+                    }
+                }else{
+                    console.log("Too low damage for deathblow")
                 }
 
             } else {
@@ -209,7 +232,6 @@ function* oneOnOne(creature1, creature2) {
 
         //Magic phase - Mystikfasen
         //NY
-
         yield combatLog;
     }
 }
@@ -226,15 +248,15 @@ function* oneOnMany(creature1, group2) {
 }
 
 function getBodyPart() {
-    let nr = new Dice(10).roll();
+    let nr = new Dice(10).roll;
     switch (nr) {
         case 1:
             return bodyParts.HEAD;
-        case 2 || 3 || 4:
+        case 2: case 3: case 4:
             return bodyParts.TORSO;
-        case 5 || 6:
+        case 5: case 6:
             return bodyParts.LEFT_ARM;
-        case 7 || 8:
+        case 7: case 8:
             return bodyParts.RIGHT_ARM;
         case 9:
             return bodyParts.LEFT_LEG;
@@ -253,7 +275,7 @@ function getDamageTableRoll(damageEffect) {
     if (damageEffect <= 9) {
         return null;
     }
-    return new Dice(10).roll() + Math.max(0, getExhaustion(damageEffect) - 4);
+    return new Dice(10).roll + Math.max(0, getExhaustion(damageEffect) - 4);
 }
 
 //pass a damage table roll
@@ -298,7 +320,7 @@ function getDamageEffect(attacker, defender) {
 }
 
 //functions that an object needs to define to participate
-module.exports = class EONCreature {
+class EONCreature {
     constructor() {
         this.exhaustion = 0;
     }
@@ -328,7 +350,7 @@ module.exports = class EONCreature {
     }
 
     getBaseExhaustion() {
-        return 0;
+        throw new Error("implement me");
     }
 
     //Chokslag - Varje gång en skada leder till att man ökar utmattning sår man ett Chokslag
@@ -352,12 +374,11 @@ module.exports = class EONCreature {
     }
 
     rollBaseDamage() {
-
+        throw new Error("implement me");
     }
 
     getModifierDamage() {
-        return 0;
-        //NYI
+        throw new Error("implement me");
     }
 
     //Eon rules mention "Rustningens skydd"
@@ -378,19 +399,33 @@ module.exports = class EONCreature {
     rollDefense() {
         throw new Error("Implement me");
     }
+
+    isDead(){
+        throw new Error("implement me");
+    }
+
+    die(){
+        throw new Error("implement me");
+    }
+
+    rollLifeForce(){
+        throw new Error("implement me");
+    }
 }
 
 class EONTestCreature extends EONCreature {
     constructor() {
         super();
+        this.dead = false;
+        this.name = new OtherNameGenerator().getDemonNameGenerator().getRandomName();
     }
 
     getName() {
-        return new OtherNameGenerator().getRandomName();
+        return this.name;
     }
 
     rollReaction() {
-        return new Dice(6).roll();
+        return new Dice(6).roll;
     }
 
     pickPhase() {
@@ -398,15 +433,15 @@ class EONTestCreature extends EONCreature {
     }
 
     rollWeaponDamage() {
-        throw new Error("implement me");
+        return new DicePool(new Dice(6), new Dice(6), new Dice(6), new Dice(6)).roll;
     }
 
     rollBaseDamage() {
-        throw new Error("implement me");
+        return new DicePool(new Dice(6)).roll;
     }
 
     getModifierDamage() {
-        throw new Error("implement me");
+        return 0;
     }
 
     //Eon rules mention "Rustningens skydd"
@@ -420,12 +455,24 @@ class EONTestCreature extends EONCreature {
     }
 
     rollAttack() {
-        return new DicePool([new Dice(6), new Dice(6)]).roll();
+        return new DicePool(new Dice(6), new Dice(6)).roll;
     }
 
     //block, dodge or parry
     rollDefense() {
-        return new DicePool([new Dice(6), new Dice(6)]).roll();
+        return new DicePool(new Dice(6), new Dice(6)).roll;
+    }
+
+    die(){
+        this.dead = true;
+    }
+
+    isDead(){
+        return this.dead;
+    }
+
+    rollLifeForce() {
+        return new DicePool(new Dice(6), new Dice(6)).roll;
     }
 }
 

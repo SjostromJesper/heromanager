@@ -9,23 +9,25 @@ module.exports = class OtherNameGenerator {
     }
 
     up(name) {
-        return name.charAt(0).toUpperCase() + name.slice(1);
+        return this.Up(name);
     }
+
     Up(name) {
         return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
-    getRandomElementFrom(v = []) {
-        return v[Math.floor(Math.random() * v.length)]
+    getRandomElementFrom(v) {
+        let index = Math.floor(Math.random() * v.length);
+        return v[index];
     }
 
-    RandomString(v = []){
+    RandomString(v) {
         return this.getRandomElementFrom(v);
     }
 
     getRandomName() {
         let nameFunction = this.getRandomElementFrom(this.nameBuilders);
-        return nameFunction().join(" ");
+        return nameFunction().join(" ").replace(" ,", ",");
     }
 
 
