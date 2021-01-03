@@ -58,7 +58,14 @@ const defensiveTactics = {
 const defensiveMoves = {
     PARRY: "parry",
     BLOCK: "block",
-    DODGE: "dodge"
+    DODGE: "dodge",
+}
+function allDefensiveMoves(){
+    let moves = [];
+    for(let key in defensiveMoves){
+        moves.push(key);
+    }
+    return moves;
 }
 
 //EON combat distances, value is 'difficulty'
@@ -196,6 +203,9 @@ function* oneOnOne(creature1, creature2) {
 
             if (attackRoll >= defenseRoll) { //tie breaker is attacker wins, eon rules
                 let bodyPart = getBodyPart();
+                let defensiveMove = defender.chooseDefensiveMove();
+                console.log("Chose defensive move")
+                console.log(defensiveMove)
 
                 //räknar ut 'Skadeverkan', vilket är den slutgiltiga skadan
                 //vilket är den slutgiltiga mängden skada efter alla modifierare och rustning o.s.v.
@@ -337,6 +347,10 @@ class EONCreature {
         throw new Error("Implement me");
     }
 
+    chooseDefensiveMove(){
+        throw new Error("Implement me");
+    }
+
     takeDamage(amount) {
         throw new Error("Implement me");
     }
@@ -432,6 +446,11 @@ class EONTestCreature extends EONCreature {
         return phases.MELEE;
     }
 
+    chooseDefensiveMove(){
+        console.log(allDefensiveMoves())
+        return getRandomElementFrom(allDefensiveMoves());
+    }
+
     rollWeaponDamage() {
         return new DicePool(new Dice(6), new Dice(6), new Dice(6), new Dice(6)).roll;
     }
@@ -474,6 +493,10 @@ class EONTestCreature extends EONCreature {
     rollLifeForce() {
         return new DicePool(new Dice(6), new Dice(6)).roll;
     }
+}
+
+function getRandomElementFrom(v){
+    return v[Math.floor(Math.random() * v.length)]
 }
 
 const DamageTable = {

@@ -41,6 +41,9 @@ const gameIo = require('socket.io')(gameHttp, {
     }
 });
 
+let world = null;
+let farmerJoe = new Farmer("", "", "", 25, 25);
+
 function start() {
     return;
     //our random map generator needs a seed
@@ -52,7 +55,7 @@ function start() {
     //world ids as x-y coordinates (as we're probably going to place worlds next to each other)
     db.loadWorld(0, 0, loadedWorld => {
 
-        let world = loadedWorld;
+        world = loadedWorld;
         console.log("Loaded world")
         console.log(world);
 
@@ -63,7 +66,7 @@ function start() {
 
             world.worldTiles = new WorldBuilder().getSmartWorld();
 
-            let farmerJoe = new Farmer("", "", "", 25, 25);
+
             console.log(farmerJoe.getName() + " has 200 hunger");
             farmerJoe.getCreatureStatus().setHunger(300);
 
