@@ -20,6 +20,7 @@ const userSchema = new Schema({
     },
     currentCharacterId: {
         type: String,
+
         required: false
     },
     resetPasswordToken: {type: String, required: false},
