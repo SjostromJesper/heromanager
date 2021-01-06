@@ -20,16 +20,11 @@ const userSchema = new Schema({
     },
     currentCharacterId: {
         type: String,
-<<<<<<< HEAD
-        required: true,
-        unique: true
-    }
-=======
+
         required: false
     },
     resetPasswordToken: {type: String, required: false},
     resetPasswordExpires: {type: String, required: false}
->>>>>>> 70cf3f05a04a346269135c2a94ea3efa91ccc4a9
 }, {timestamps: true})
 
 
