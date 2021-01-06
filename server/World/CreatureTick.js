@@ -37,7 +37,7 @@ module.exports = class CreatureTick{
     }
 
     //The tile the current creature is on
-    getCreatureTile(creatureTile) {
+    getCreatureTile() {
         return this.creatureTile;
     }
 

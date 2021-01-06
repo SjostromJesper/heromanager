@@ -24,7 +24,7 @@ const App = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if(socket.isConnected) {
+            if (socket.isConnected) {
                 socket.emit("getWorld", "");
                 socket.emit("getPlayer", "");
             }
@@ -55,7 +55,6 @@ const App = () => {
                         })}
                     </Switch>
                 </Router>
-
                 <Login></Login>
                 <div className="info">
                     <Inventory inventoryData={inventory}/>
