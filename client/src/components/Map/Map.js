@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import react, {useEffect, useState} from "react";
 
 const Map = (props) => {
     const [world, setWorld] = useState()

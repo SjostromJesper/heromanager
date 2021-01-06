@@ -4,7 +4,8 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
     id: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     }
 }, {timestamps: true})
 
